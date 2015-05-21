@@ -1,0 +1,51 @@
+div {
+    box-sizing: border-box;
+}
+
+.field {
+    margin: 10px;
+    border: solid blue 5px;
+    width: 610px;
+    border-radius: 10px;
+}
+
+.cell.x:after {
+    content: '✕';
+    color: green;
+    font-size: 140px;
+    position: absolute;
+    width: 194px;
+    height: 194px;
+    line-height: 194px;
+    text-align: center;
+}
+
+.cell.o:after {
+    font-weight: bold;
+    color: red;
+    content: '◯';
+    font-size: 140px;
+    position: absolute;
+    width: 194px;
+    height: 194px;
+    line-height: 200px;
+    text-align: center;
+}
+
+
+
+.row {
+    height: 200px;
+}
+
+.cell {
+    display: inline-block;
+    border: solid gray 2px;
+    width: 200px;
+    height: 200px;
+}
+
+.winner-message {
+    font-size: 50px;
+    font-weight: bold;
+}
