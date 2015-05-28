@@ -1,5 +1,4 @@
 //Ваш код будет здесь
-
 var options = {};
 var state = {
   todos: []
@@ -10,39 +9,46 @@ if (data) {
 }
 
 function update() {
-  var list = document.querySelector('.todolist');
+  var list = options.list;
   var listItems = state.todos;
+  var el
   var i;
+  listItems.sort();
   list.innerHTML = '';
   for ( i = 0; i < listItems.length; i++ ) {
-    var el = document.createElement('li');
+    el = document.createElement('li');
     el.innerHTML = listItems[i];
     list.appendChild(el);
   }
 }
 
 function addToDo() {
-  var todoInput = document.querySelector('.todoinput');
-  var todoValue = todoInput.value;
+  var todoValue = options.todoInput.value;
   if (todoValue === '') {
-    document.querySelector('.errormessage').innerHTML = options.errorEmptyText;
+    options.errorMsgDiv.innerHTML = options.errorEmptyText;
     return false;
   }
   state.todos.push(todoValue);
   update();
-  todoInput.value = '';
+  options.todoInput.value = '';
   localStorage.setItem('tasks', JSON.stringify(state));
 }
 function clearErrorMsg() {
-  if ( document.querySelector('.errormessage').innerHTML !== '' )  document.querySelector('.errormessage').innerHTML = '';
+  if ( options.errorMsgDiv.innerHTML !== '' ) options.errorMsgDiv.innerHTML = '';
 }
 function init() {
-  update();
+  var btn;
   options.errorEmptyText = 'Data is empty';
-  var btn = document.querySelector('.addToDo');
-  var todoInput = document.querySelector('.todoinput');
+  options.errorMsgDiv = document.querySelector('.error-message');
+  options.todoInput = document.querySelector('.todoinput');
+  options.list = document.querySelector('.todolist');
+  update();
+  btn = document.querySelector('.addToDo');
   btn.addEventListener('click', addToDo);
-  todoInput.addEventListener('focus', clearErrorMsg);
+  options.todoInput.addEventListener('focus', clearErrorMsg);
+  options.todoInput.addEventListener('keyup', function(e) {
+    if (e.keyCode === 13) addToDo();
+  });
 }
 
 window.addEventListener('DOMContentLoaded', function() {
