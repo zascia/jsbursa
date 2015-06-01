@@ -101,7 +101,7 @@ function saveChoice(el, sign) {
     sign: sign
   }
   state.game.push(currentState);
-  window.localStorage.clear();
+  localStorage.removeItem('game');
   localStorage.setItem('game', JSON.stringify(state));
 }
 function makeChoice(e) {
@@ -124,6 +124,7 @@ function startNewGame() {
   options.mainGameContainer.style.display = 'none';
   options.startGameContainer.style.display = 'block';
   options.createField.addEventListener('click', newField);
+  localStorage.removeItem('game');
 }
 
 window.addEventListener('load', function () {
