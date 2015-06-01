@@ -14,6 +14,9 @@ function isCurrentGame() {
 }
 function startOptions() {
   options.createField = document.querySelector('.generateField');
+  options.startNewGameBtn = document.querySelector('.startNewGame');
+  options.startGameContainer = document.querySelector('.startGame');
+  options.mainGameContainer = document.querySelector('.mainGame');
   options.field = document.querySelector('.field');
   options.winnerMessage = document.querySelector('.winner-message');
   options.errorMessage = 'Вы ввели некорректное число';
@@ -37,12 +40,12 @@ function showHideError(hide) {
 function renderField(num) {
   var i;
   // hide start game field
-  var startGameField = document.querySelector('.startGame');
   var cellsContainer = document.querySelector('.field');
-  startGameField.style.display = 'none';
+  options.startGameContainer.style.display = 'none';
   // show battle field
-  var mainGame = document.querySelector('.mainGame');
-  mainGame.style.display = 'block';
+  // clear old data
+  cellsContainer.innerHTML = '';
+  options.mainGameContainer.style.display = 'block';
   // save length of field
   state.game.push(num);
   // draw rows and cells
@@ -63,6 +66,11 @@ function renderField(num) {
   state.started = true;
   options.field = document.querySelector('.field');
   options.field.addEventListener('click', makeChoice);
+
+  cells = document.querySelectorAll('.cell');
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].innerHTML = i;
+  }
 }
 function newField() {
   var num = parseInt( document.querySelector('.count').value );
@@ -73,8 +81,7 @@ function newField() {
 }
 function checkGame() {
   if ( isCurrentGame() ) {
-    var startGame = document.querySelector('.startGame');
-    startGame.style.display = 'none';
+    options.startGameContainer.style.display = 'none';
   }
 }
 
@@ -87,6 +94,16 @@ function finishGame(winner) {
   options.field.removeEventListener('click', makeChoice);
   state.started = false;
 }
+function saveChoice(el, sign) {
+  var indexEl = Array.prototype.indexOf.call(document.querySelectorAll('.cell'), el);
+  var currentState = {
+    index: indexEl,
+    sign: sign
+  }
+  state.game.push(currentState);
+  window.localStorage.clear();
+  localStorage.setItem('game', JSON.stringify(state));
+}
 function makeChoice(e) {
   var el = e.target;
   var winner;
@@ -94,15 +111,25 @@ function makeChoice(e) {
 
   if (state.next === 'x') el.classList.add('x');
   else el.classList.add('o');
+  saveChoice(el, state.next);
   state.next = (state.next === 'x') ? 'o' : 'x';
 
   winner = getWinner();
   if (winner) finishGame(winner);
 }
 
+//when click to start new game
+function startNewGame() {
+  options.winnerMessage.innerHTML = '';
+  options.mainGameContainer.style.display = 'none';
+  options.startGameContainer.style.display = 'block';
+  options.createField.addEventListener('click', newField);
+}
+
 window.addEventListener('load', function () {
   'use strict';
   startOptions();
-  checkGame();
+  //checkGame();  check in localStorage existing data for saved games
   options.createField.addEventListener('click', newField);
+  options.startNewGameBtn.addEventListener('click', startNewGame);
 });
