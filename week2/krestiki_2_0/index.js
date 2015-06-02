@@ -1,9 +1,13 @@
 var options = {};
-var state = {
-  game: [],
-  started: false,
-  next: 'x'
-};
+var state = {};
+function stateInit() {
+  state = {
+    game: [],
+    fieldNum: '',
+    started: false,
+    next: 'x'
+  };
+}
 function isCurrentGame() {
   var data = localStorage.getItem('game');
   if (data) {
@@ -22,6 +26,7 @@ function startOptions() {
   options.errorMessage = 'Вы ввели некорректное число';
   options.minNum = 5;
   options.maxNum = 15;
+  stateInit();
 }
 
 function isLegalNumber(num) {
@@ -47,7 +52,7 @@ function renderField(num) {
   cellsContainer.innerHTML = '';
   options.mainGameContainer.style.display = 'block';
   // save length of field
-  state.game.push(num);
+  state.fieldNum = num;
   // draw rows and cells
   // make template of row with cells
   var currentRow = document.createElement('div');
@@ -96,13 +101,13 @@ function finishGame(winner) {
 }
 function saveChoice(el, sign) {
   var indexEl = Array.prototype.indexOf.call(document.querySelectorAll('.cell'), el);
-  var currentState = {
+  var currentChoice = {
     index: indexEl,
     sign: sign
   }
-  state.game.push(currentState);
-  localStorage.removeItem('game');
+  state.game.push(currentChoice);
   localStorage.setItem('game', JSON.stringify(state));
+  console.log(state.game);
 }
 function makeChoice(e) {
   var el = e.target;
@@ -123,8 +128,8 @@ function startNewGame() {
   options.winnerMessage.innerHTML = '';
   options.mainGameContainer.style.display = 'none';
   options.startGameContainer.style.display = 'block';
+  stateInit();
   options.createField.addEventListener('click', newField);
-  localStorage.removeItem('game');
 }
 
 window.addEventListener('load', function () {
