@@ -1,5 +1,6 @@
 var options = {};
 var state = {};
+var cells;
 function stateInit() {
   state = {
     game: [],
@@ -7,11 +8,13 @@ function stateInit() {
     started: false,
     next: 'x'
   };
+  checkGame();
 }
 function isCurrentGame() {
   var data = localStorage.getItem('game');
   if (data) {
-    state.game = JSON.parse(data);
+    state = JSON.parse(data);
+    console.log('storage exists ', state);
     return true;
   }
   return false;
@@ -73,6 +76,8 @@ function renderField(num) {
   options.field.addEventListener('click', makeChoice);
 
   cells = document.querySelectorAll('.cell');
+
+  <!-- TODO: remove later -->
   for (var i = 0; i < cells.length; i++) {
     cells[i].innerHTML = i;
   }
@@ -84,9 +89,20 @@ function newField() {
     renderField(num);
   }
 }
+function fillOldMoves() {
+  var oldMoves = state.game;
+  var i, cellIndex, cellClass;
+  for ( i = 0; i < oldMoves.length; i++ ) {
+    cellIndex = oldMoves[i].index;
+    cellClass = oldMoves[i].sign;
+    cells[cellIndex].classList.add(cellClass);
+  }
+}
 function checkGame() {
   if ( isCurrentGame() ) {
-    options.startGameContainer.style.display = 'none';
+    var num = state.fieldNum;
+    renderField(num);
+    fillOldMoves();
   }
 }
 
@@ -116,11 +132,10 @@ function makeChoice(e) {
 
   if (state.next === 'x') el.classList.add('x');
   else el.classList.add('o');
+  winner = getWinner();
+  if (winner) finishGame(winner, el);
   saveChoice(el, state.next);
   state.next = (state.next === 'x') ? 'o' : 'x';
-
-  winner = getWinner();
-  if (winner) finishGame(winner);
 }
 
 //when click to start new game
@@ -128,6 +143,7 @@ function startNewGame() {
   options.winnerMessage.innerHTML = '';
   options.mainGameContainer.style.display = 'none';
   options.startGameContainer.style.display = 'block';
+  localStorage.removeItem('game');
   stateInit();
   options.createField.addEventListener('click', newField);
 }
@@ -135,7 +151,6 @@ function startNewGame() {
 window.addEventListener('load', function () {
   'use strict';
   startOptions();
-  //checkGame();  check in localStorage existing data for saved games
   options.createField.addEventListener('click', newField);
   options.startNewGameBtn.addEventListener('click', startNewGame);
 });
