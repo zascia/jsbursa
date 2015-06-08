@@ -7,11 +7,13 @@ var data = localStorage.getItem('tasks');
 if (data) {
   state = JSON.parse(localStorage.getItem('tasks'));
 }
-
+function clearErrorMsg() {
+  if ( options.errorMsgDiv && options.errorMsgDiv.innerHTML !== '' ) options.errorMsgDiv.innerHTML = '';
+}
 function update() {
   var list = options.list;
   var listItems = state.todos;
-  var el
+  var el;
   var i;
   listItems.sort();
   list.innerHTML = '';
@@ -21,20 +23,17 @@ function update() {
     list.appendChild(el);
   }
 }
-
 function addToDo() {
   var todoValue = options.todoInput.value;
   if (todoValue === '') {
     options.errorMsgDiv.innerHTML = options.errorEmptyText;
     return false;
   }
+  clearErrorMsg();
   state.todos.push(todoValue);
   update();
   options.todoInput.value = '';
   localStorage.setItem('tasks', JSON.stringify(state));
-}
-function clearErrorMsg() {
-  if ( options.errorMsgDiv && options.errorMsgDiv.innerHTML !== '' ) options.errorMsgDiv.innerHTML = '';
 }
 function init() {
   var btn;
