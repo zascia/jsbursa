@@ -5,7 +5,7 @@ function stateInit() {
   state = {
     game: [],
     fieldNum: '',
-    started: false,
+    started: '',
     next: 'x'
   };
   checkGame();
@@ -71,9 +71,14 @@ function renderField(num) {
   }
   // TODO --> move to separate function
   // after render logic
-  state.started = true;
+  if ( state.started !== false ) {
+    state.started = true;
+    options.field.addEventListener('click', makeChoice);
+  } else {
+    showWinMessage();
+  }
   options.field = document.querySelector('.field');
-  options.field.addEventListener('click', makeChoice);
+
 
   cells = document.querySelectorAll('.cell');
 
@@ -90,11 +95,13 @@ function newField() {
   }
 }
 function fillOldMoves() {
+  // state has been filled from localStorage data
   var oldMoves = state.game;
   var i, cellIndex, cellClass;
   for ( i = 0; i < oldMoves.length; i++ ) {
     cellIndex = oldMoves[i].index;
     cellClass = oldMoves[i].sign;
+    // create querySelectorAll collection of cells and restore moves
     cells[cellIndex].classList.add(cellClass);
   }
 }
@@ -109,11 +116,16 @@ function checkGame() {
 function isEmptyCell(cellItem) {
   return !( cellItem.classList.contains('x') || cellItem.classList.contains('o') );
 }
-function finishGame(winner) {
+function finishGame() {
+  options.field.removeEventListener('click', makeChoice);
+
+  showWinMessage();
+}
+function showWinMessage() {
+  var lastCellIndex = state.game.length - 1;
+  var winner = state.game[lastCellIndex].sign;
   var winnerText = (winner === 'x') ? 'Крестик победил' : 'Нолик победил';
   options.winnerMessage.innerHTML = winnerText;
-  options.field.removeEventListener('click', makeChoice);
-  state.started = false;
 }
 function saveChoice(el, sign) {
   var indexEl = Array.prototype.indexOf.call(document.querySelectorAll('.cell'), el);
@@ -132,9 +144,15 @@ function makeChoice(e) {
 
   if (state.next === 'x') el.classList.add('x');
   else el.classList.add('o');
-  winner = getWinner();
-  if (winner) finishGame(winner, el);
+
   saveChoice(el, state.next);
+
+  winner = getWinner();
+  if (winner) {
+    state.started = false;
+    saveChoice(el, state.next);
+    finishGame();
+  }
   state.next = (state.next === 'x') ? 'o' : 'x';
 }
 
