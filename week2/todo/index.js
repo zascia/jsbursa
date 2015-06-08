@@ -34,12 +34,12 @@ function addToDo() {
   localStorage.setItem('tasks', JSON.stringify(state));
 }
 function clearErrorMsg() {
-  if ( options.errorMsgDiv.innerHTML !== '' ) options.errorMsgDiv.innerHTML = '';
+  if ( options.errorMsgDiv && options.errorMsgDiv.innerHTML !== '' ) options.errorMsgDiv.innerHTML = '';
 }
 function init() {
   var btn;
   options.errorEmptyText = 'Data is empty';
-  options.errorMsgDiv = document.querySelector('.error-message');
+  options.errorMsgDiv = document.querySelector('.errormessage');
   options.todoInput = document.querySelector('.todoinput');
   options.list = document.querySelector('.todolist');
   update();
