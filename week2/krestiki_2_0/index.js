@@ -2,6 +2,7 @@ var options = {};
 var state = {};
 var cells;
 function stateInit() {
+  'use strict';
   state = {
     game: [],
     fieldNum: '',
@@ -11,15 +12,16 @@ function stateInit() {
   checkGame();
 }
 function isCurrentGame() {
+  'use strict';
   var data = localStorage.getItem('game');
   if (data) {
     state = JSON.parse(data);
-    console.log('storage exists ', state);
     return true;
   }
   return false;
 }
 function startOptions() {
+  'use strict';
   options.createField = document.querySelector('.generateField');
   options.startNewGameBtn = document.querySelector('.startNewGame');
   options.startGameContainer = document.querySelector('.startGame');
@@ -29,14 +31,11 @@ function startOptions() {
   options.errorMessage = 'Вы ввели некорректное число';
   options.minNum = 5;
   options.maxNum = 15;
+  options.mainGameContainer.style.display = 'none';
   stateInit();
 }
-
-function isLegalNumber(num) {
-  if ( isNaN(num) || !isFinite(num) || num > options.maxNum || num < options.minNum ) return showHideError();
-  return showHideError(true);
-}
 function showHideError(hide) {
+  'use strict';
   var errorMsgDiv = document.querySelector('.error-message');
   if (hide) {
     errorMsgDiv.innerHTML = '';
@@ -45,8 +44,19 @@ function showHideError(hide) {
   errorMsgDiv.innerHTML = options.errorMessage;
   return false;
 }
+function isLegalNumber(num) {
+  'use strict';
+  var numInt;
+  if ( (parseInt( num ) !== parseFloat( num ) ) ) return showHideError();
+  numInt = parseInt( num );
+  if ( isNaN(numInt) || !isFinite(numInt) || numInt > options.maxNum || numInt < options.minNum ) return showHideError();
+  return showHideError(true);
+}
 function renderField(num) {
+  'use strict';
   var i;
+  var currentRow;
+  var currentCell;
   // hide start game field
   var cellsContainer = document.querySelector('.field');
   options.startGameContainer.style.display = 'none';
@@ -58,10 +68,10 @@ function renderField(num) {
   state.fieldNum = num;
   // draw rows and cells
   // make template of row with cells
-  var currentRow = document.createElement('div');
+  currentRow = document.createElement('div');
   currentRow.classList.add('row');
   for ( i = 0; i < num; i++ ) {
-    var currentCell = document.createElement('div');
+    currentCell = document.createElement('div');
     currentCell.classList.add('cell');
     currentRow.appendChild(currentCell);
   }
@@ -69,7 +79,6 @@ function renderField(num) {
   for ( i = 0; i < num; i++ ) {
     cellsContainer.appendChild(currentRow.cloneNode(true));
   }
-  // TODO --> move to separate function
   // after render logic
   if ( state.started !== false ) {
     state.started = true;
@@ -78,26 +87,23 @@ function renderField(num) {
     showWinMessage();
   }
   options.field = document.querySelector('.field');
-
-
   cells = document.querySelectorAll('.cell');
-
-  <!-- TODO: remove later -->
-  for (var i = 0; i < cells.length; i++) {
-    cells[i].innerHTML = i;
-  }
 }
 function newField() {
-  var num = parseInt( document.querySelector('.count').value );
+  'use strict';
+  var num = document.querySelector('.count').value;
   if ( isLegalNumber(num) ) {
     options.createField.removeEventListener('click', newField);
-    renderField(num);
+    renderField(parseInt(num));
   }
 }
 function fillOldMoves() {
+  'use strict';
   // state has been filled from localStorage data
   var oldMoves = state.game;
-  var i, cellIndex, cellClass;
+  var i;
+  var cellIndex;
+  var cellClass;
   for ( i = 0; i < oldMoves.length; i++ ) {
     cellIndex = oldMoves[i].index;
     cellClass = oldMoves[i].sign;
@@ -106,58 +112,59 @@ function fillOldMoves() {
   }
 }
 function checkGame() {
+  'use strict';
+  var num;
   if ( isCurrentGame() ) {
-    var num = state.fieldNum;
+    num = state.fieldNum;
     renderField(num);
     fillOldMoves();
   }
 }
-
+function showWinMessage() {
+  'use strict';
+  var lastCellIndex = state.game.length - 1;
+  var winner = state.game[lastCellIndex].sign;
+  options.winnerMessage.innerHTML = (winner === 'x') ? 'Крестик победил' : 'Нолик победил';
+}
 function isEmptyCell(cellItem) {
+  'use strict';
   return !( cellItem.classList.contains('x') || cellItem.classList.contains('o') );
 }
 function finishGame() {
+  'use strict';
   options.field.removeEventListener('click', makeChoice);
-
   showWinMessage();
 }
-function showWinMessage() {
-  var lastCellIndex = state.game.length - 1;
-  var winner = state.game[lastCellIndex].sign;
-  var winnerText = (winner === 'x') ? 'Крестик победил' : 'Нолик победил';
-  options.winnerMessage.innerHTML = winnerText;
-}
 function saveChoice(el, sign) {
+  'use strict';
   var indexEl = Array.prototype.indexOf.call(document.querySelectorAll('.cell'), el);
   var currentChoice = {
     index: indexEl,
     sign: sign
   }
   state.game.push(currentChoice);
+  state.next = (state.next === 'x') ? 'o' : 'x';
   localStorage.setItem('game', JSON.stringify(state));
-  console.log(state.game);
 }
 function makeChoice(e) {
+  'use strict';
   var el = e.target;
-  var winner;
   if (!isEmptyCell(el)) return false;
 
   if (state.next === 'x') el.classList.add('x');
   else el.classList.add('o');
 
-  saveChoice(el, state.next);
-
-  winner = getWinner();
-  if (winner) {
+  if ( getWinner() ) {
     state.started = false;
     saveChoice(el, state.next);
     finishGame();
+  } else {
+    saveChoice(el, state.next);
   }
-  state.next = (state.next === 'x') ? 'o' : 'x';
 }
-
-//when click to start new game
+// when click to start new game
 function startNewGame() {
+  'use strict';
   options.winnerMessage.innerHTML = '';
   options.mainGameContainer.style.display = 'none';
   options.startGameContainer.style.display = 'block';
@@ -165,8 +172,7 @@ function startNewGame() {
   stateInit();
   options.createField.addEventListener('click', newField);
 }
-
-window.addEventListener('load', function () {
+window.addEventListener('load', function namedFunc() {
   'use strict';
   startOptions();
   options.createField.addEventListener('click', newField);
