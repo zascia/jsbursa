@@ -5,13 +5,18 @@ function sendAJAX(method, url) {
   'use strict';
   var xhr;
   var elem;
+  var type;
+  var content;
   elem = document.querySelector('.' + method.toLowerCase());
   xhr = new XMLHttpRequest();
   xhr.open(method, url);
   xhr.addEventListener('readystatechange', function() {
-    if ( xhr.readyState === 4 ) {
-      if (xhr.responseText && JSON.parse(xhr.responseText).status === 'ok') {
-        elem.classList.add('ok');
+    if ( xhr.readyState === 4 && xhr.status === 200) {
+      type = xhr.getResponseHeader('Content-Type');
+      console.log(type);
+      if (xhr.responseText ) {
+        content = ( type === 'application/json' ) ? JSON.parse(xhr.responseText).status : xhr.responseText;
+        if ( content === 'ok' ) elem.classList.add('ok');
       }
     }
     else elem.classList.add('failed');
