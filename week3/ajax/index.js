@@ -13,14 +13,17 @@ function sendAJAX(method, url) {
   xhr.addEventListener('readystatechange', function() {
     if ( xhr.readyState === 4 && xhr.status === 200) {
       type = xhr.getResponseHeader('Content-Type');
-      console.log(type);
       if (xhr.responseText ) {
         content = ( type === 'application/json' ) ? JSON.parse(xhr.responseText).status : xhr.responseText;
-        if ( content === 'ok' ) elem.classList.add('ok');
+        if ( content === 'ok' ) {
+          elem.classList.add('ok');
+          elem.textContent = 'OK';
+        }
       }
+    } else {
+      elem.classList.add('failed');
+      elem.textContent = 'Failed';
     }
-    else elem.classList.add('failed');
-    console.log(elem);
   });
   xhr.send();
 }
@@ -30,7 +33,7 @@ function init() {
   var url;
   var i;
   methods = ['GET', 'POST', 'WEIRD'];
-  url = 'https://cors-test.appspot.com/test';
+  url = 'http://cors-test.appspot.com/test';
   for ( i = 0; i < methods.length; i++ ) {
     sendAJAX(methods[i], url);
   }

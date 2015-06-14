@@ -12,7 +12,6 @@ function jsonpCallback(data) {
   'use strict';
   var text;
   textContainer.innerHTML = '';
-  console.log('data');
   text = (data.parse ) ? data.parse.text['*'] : 'undefined';
   textContainer.innerHTML = text;
 }
@@ -33,7 +32,6 @@ function makeJSONPQuery() {
   var queryString;
   title = document.querySelector('input').value;
   if (trimString(title) === '') {
-    console.log('empty string');
     return false;
   }
   queryString = JSONPQuery.replace(/title/, title);
@@ -49,5 +47,6 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', function someName() {
+  'use strict';
   init();
 });
