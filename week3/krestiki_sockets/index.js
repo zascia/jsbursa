@@ -34,7 +34,9 @@ function getXHRData(xhr) {
   type = xhr.getResponseHeader('Content-Type');
   console.log('xhr type = ' + type);
   if (xhr.responseText ) {
-    if ( type.match(/application\/json/) ) {
+    if ( type && type.match(/application\/json/) ) {
+      content = JSON.parse(xhr.responseText);
+    } else if (xhr.responseText.match(/side/)) {
       content = JSON.parse(xhr.responseText);
     } else {
       content = xhr.responseText;
@@ -76,6 +78,46 @@ function removeGameFromList(id) {
     gameList.removeChild(gameItem);
   }
 }
+
+function isEmptyCell(cellItem) {
+  'use strict';
+  return !( cellItem.classList.contains('x') || cellItem.classList.contains('o') );
+}
+function makeChoice(e) {
+  'use strict';
+  var el = e.target;
+  if (!isEmptyCell(el)) return false;
+  // TODO G1 + G2
+  el.classList.add(state.myClass);
+  // TODO EO G1 + G2
+}
+function renderField(num) {
+  'use strict';
+  var i;
+  var currentRow;
+  var currentCell;
+  // hide start game field
+  var cellsContainer = document.querySelector('.field');
+  // clear old data
+  cellsContainer.innerHTML = '';
+  // save length of field
+  // draw rows and cells
+  // make template of row with cells
+  currentRow = document.createElement('div');
+  currentRow.classList.add('row');
+  for ( i = 0; i < num; i++ ) {
+    currentCell = document.createElement('div');
+    currentCell.classList.add('cell');
+    currentRow.appendChild(currentCell);
+  }
+  // insert template
+  for ( i = 0; i < num; i++ ) {
+    cellsContainer.appendChild(currentRow.cloneNode(true));
+  }
+  // after render logic
+  cellsContainer.addEventListener('click', makeChoice);
+}
+
 function startGameClientSide(xhr) {
   'use strict';
   var content;
@@ -84,13 +126,15 @@ function startGameClientSide(xhr) {
     console.log('get side ' + content.side + ' from server');
     startGameContainer.style.display = 'none';
     mainGameContainer.style.display = 'block';
+    renderField(10);
+    state.myClass = content.side;
     return;
   }
   if (xhr.status === 410) {
-    showMessage(createGameStatusMsg, 'Ошибка старта игры: другой игрок не ответил');
+    showMessage(createGameStatusMsg, '?????? ?????? ????: ?????? ????? ?? ???????');
     return;
   }
-  showMessage(createGameStatusMsg, 'Неизвестная ошибка старта игры');
+  showMessage(createGameStatusMsg, '??????????? ?????? ?????? ????');
 }
 function startGameServerPart(playerId) {
   'use strict';
@@ -99,7 +143,7 @@ function startGameServerPart(playerId) {
   startGameObj = {};
   state.playerId = playerId;
   startGameBtn.disabled = true;
-  showMessage(createGameStatusMsg, 'Ожидаем начала игры');
+  showMessage(createGameStatusMsg, '??????? ?????? ????');
   gameReadyUrl = gameUrls.gameReady;
   startGameObj.player = playerId;
   startGameObj.game = state.gameId;
@@ -122,6 +166,7 @@ function handleMessage(event) {
       removeGameFromList(message.id);
       break;
     default:
+      console.log('default ws message in switch operator ' + message.id);
       break;
   }
   // console.log('Message has been sent ' + event.data);
@@ -153,8 +198,8 @@ function webSocketControl(url) {
 }
 function cancelCreateGame() {
   'use strict';
+  showMessage(createGameStatusMsg, '?????? ???????? ????');
   startGameBtn.disabled = false;
-  showMessage(createGameStatusMsg, 'Ошибка создания игры');
 }
 function registerGameOnServer(xhr) {
   'use strict';
