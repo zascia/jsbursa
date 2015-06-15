@@ -8,8 +8,11 @@ var startGameBtn;
 var createGameStatusMsg;
 var startGameContainer;
 var mainGameContainer;
+var mainGameStatusMsg;
 var gameList;
 var state;
+var cellsContainer;
+var cells;
 state = {};
 function sendAJAX(method, url, data, callback) {
   'use strict';
@@ -23,6 +26,10 @@ function sendAJAX(method, url, data, callback) {
   });
   if (data) {
     xhr.setRequestHeader('Content-Type', 'application/json');
+    if (url === gameUrls.move) {
+      xhr.setRequestHeader('Game-ID', state.gameId);
+      xhr.setRequestHeader('Player-ID', state.playerId);
+    }
     xhr.send(data);
   }
   else xhr.send();
@@ -79,17 +86,55 @@ function removeGameFromList(id) {
   }
 }
 
+
 function isEmptyCell(cellItem) {
   'use strict';
   return !( cellItem.classList.contains('x') || cellItem.classList.contains('o') );
 }
+function responseForMove(xhr) {
+  'use strict';
+  var content;
+  console.log('xhr = ' + xhr.responseText);
+  if (xhr.status === 200) {
+    cellsContainer.removeEventListener('click', makeChoice);
+    content = getXHRData(xhr);
+    fillMove(state.last);
+    if (content.win) {
+      makeWinner(content.win);
+    }
+  } else {
+    errorMove(content.message);
+  }
+}
+//
+function makeWinner(winner) {
+  mainGameStatusMsg.textContent = winner;
+}
+function errorMove(errorMsg) {
+  'use strict';
+  mainGameStatusMsg.textContent = errorMsg || '??????????? ??????';
+  cancelCreateGame();
+}
+// fill with x or o if success after click
+function fillMove(index) {
+  'use strict';
+  cells[index].classList.add(state.myClass);
+}
 function makeChoice(e) {
   'use strict';
-  var el = e.target;
+  var indexEl;
+  var el;
+  var moveObj;
+  el = e.target;
   if (!isEmptyCell(el)) return false;
-  // TODO G1 + G2
-  el.classList.add(state.myClass);
-  // TODO EO G1 + G2
+  indexEl = Array.prototype.indexOf.call(document.querySelectorAll('.cell'), el);
+  state.last = indexEl;
+  moveObj = {};
+  moveObj.move = ++indexEl;
+  sendAJAX('POST', gameUrls.move, JSON.stringify(moveObj), responseForMove);
+
+  // ? ?????? ?????? 200 ?? G1 ????????? ??????????????? ??????? ???? ????? ?? ??????, ?? ??????? ????????. ???? ? ?????? ??????? ?????????? ???? win (????? ????????? ???????? 'x' ???? 'o') - ??????? ? .status-message ?????????, ??????? ????? ? ???? win. ???? ???????? ???-??.
+  // ? ?????? ??????? ??????? G1 ??????? ????????? ? .status-message ???? ?????????? ???? message ??????, ????, ???? ?????? ??? - ????? "??????????? ??????". ?????????? ?????????? ????? ??????, ????????? ? ????? ????? ?????? newGame
 }
 function renderField(num) {
   'use strict';
@@ -97,7 +142,7 @@ function renderField(num) {
   var currentRow;
   var currentCell;
   // hide start game field
-  var cellsContainer = document.querySelector('.field');
+  cellsContainer = document.querySelector('.field');
   // clear old data
   cellsContainer.innerHTML = '';
   // save length of field
@@ -115,7 +160,28 @@ function renderField(num) {
     cellsContainer.appendChild(currentRow.cloneNode(true));
   }
   // after render logic
+  cells = document.querySelectorAll('.cell');
+  startGameLogic();
+}
+// TODO G1 + G2 + G3
+function myMoveLogic() {
+  'use strict';
   cellsContainer.addEventListener('click', makeChoice);
+}
+// EO TODO G1 + G2 + G3
+// TODO H1 + H2
+function notMyMoveLogic() {
+  'use strict';
+}
+// EO TODO H1 + H2
+function startGameLogic() {
+  'use strict';
+  mainGameStatusMsg = document.querySelector('.mainGame .status-message');
+  if (state.myClass === 'x') {
+    myMoveLogic();
+  } else {
+    notMyMoveLogic();
+  }
 }
 
 function startGameClientSide(xhr) {
@@ -126,8 +192,8 @@ function startGameClientSide(xhr) {
     console.log('get side ' + content.side + ' from server');
     startGameContainer.style.display = 'none';
     mainGameContainer.style.display = 'block';
-    renderField(10);
     state.myClass = content.side;
+    renderField(10);
     return;
   }
   if (xhr.status === 410) {

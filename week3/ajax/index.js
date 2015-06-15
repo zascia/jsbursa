@@ -13,6 +13,7 @@ function sendAJAX(method, url) {
   xhr.addEventListener('readystatechange', function() {
     if ( xhr.readyState === 4 && xhr.status === 200) {
       type = xhr.getResponseHeader('Content-Type');
+      console.log('type = ' + type);
       if (xhr.responseText ) {
         content = ( type === 'application/json' ) ? JSON.parse(xhr.responseText).status : xhr.responseText;
         if ( content === 'ok' ) {
