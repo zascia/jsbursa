@@ -167,9 +167,22 @@ function myMoveLogic() {
   cellsContainer.addEventListener('click', makeChoice);
 }
 // EO TODO G1 + G2 + G3
+
 // TODO H1 + H2
+function getLongPoll(xhr) {
+  'use strict';
+  var content = getXHRData(xhr);
+  if (200 === xhr.status) {
+    
+  }
+}
+function makeLongPoll() {
+  'use strict';
+  sendAJAX('GET', gameUrls.move, null, getLongPoll);
+}
 function notMyMoveLogic() {
   'use strict';
+  makeLongPoll();
 }
 // EO TODO H1 + H2
 function startGameLogic() {
