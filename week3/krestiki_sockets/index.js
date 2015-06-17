@@ -107,16 +107,18 @@ function responseForMove(xhr) {
       notMyMoveLogic();
     }
   } else {
-    errorMove(content.message);
+    errorMove(content);
   }
 }
-//
+
 function makeWinner(winner) {
   mainGameStatusMsg.textContent = winner;
 }
-function errorMove(errorMsg) {
+function errorMove(content) {
   'use strict';
-  mainGameStatusMsg.textContent = errorMsg || 'Неизвестная ошибка';
+  var errMsg;
+  errMsg = ( content === undefined ) ? 'Неизвестная ошибка' : content.responseText;
+  mainGameStatusMsg.textContent = errMsg;
   cancelCreateGame();
 }
 // fill with x or o if success after click
