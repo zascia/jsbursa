@@ -173,7 +173,7 @@ function getLongPoll(xhr) {
   'use strict';
   var content = getXHRData(xhr);
   if (200 === xhr.status) {
-    
+
   }
 }
 function makeLongPoll() {
