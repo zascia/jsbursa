@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <title>Сотрудники</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/dispatcher.js"></script>
+    <script src="js/api/api.js"></script>
+    <script src="js/storage/userStorage.js"></script>
+    <script src="js/components/userList.js"></script>
+    <script src="js/components/userEdit.js"></script>
+    <script src="js/components/userAdd.js"></script>
+    <script src="js/components/userRemovePopup.js"></script>
+    <script src="js/index.js"></script>
+</head>
+<body>
+<div class="row">
+    <div class="col s3 blue lighten-5 list-container">
+        <div class="list">
+            <ul id="user-list" data-bind-component="UserList">
+            </ul>
+        </div>
+        <a class="add-user btn-floating btn-large waves-effect waves-light red"><i class="mdi-content-add"></i></a>
+    </div>
+    <div class="col s9 main-content">
+    </div>
+</div>
+<div id="editTemplate" style="display:none;">
+    <a class="save-btn waves-effect waves-light btn"><i class="mdi-file-cloud left"></i>Сохранить</a>
+    <h2>Редактирование пользователя</h2>
+    <form>
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="mdi-action-account-circle prefix"></i>
+                        <input id="icon_prefix" type="text" class="validate" value="Empty">
+                        <label for="icon_prefix">Фамилия Имя</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input id="icon_telephone" type="tel" class="validate" value="Empty">
+                        <label for="icon_telephone">Телефон</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row city-field">
+            <div class="input-field col s12">
+                <select>
+                    <option value="" disabled selected>Выберите город</option>
+                    <option value="Kiev">Киев</option>
+                    <option value="Kharkiv">Харьков</option>
+                    <option value="Dnepropetrovsk">Днепропетровск</option>
+                    <option value="Lviv">Львов</option>
+                    <option value="Odessa">Одесса</option>
+                    <option value="Online">Онлайн</option>
+                </select>
+                <label>Город</label>
+            </div>
+        </div>
+        <div class="row strikes-field">
+            <label>Штрафы</label>
+            <div class="range-field col s12">
+                <input type="range" id="test5" min="0" max="2" />
+            </div>
+        </div>
+    </form>
+</div>
+<div id="addTemplate" style="display:none;">
+    <a class="save-btn waves-effect waves-light btn"><i class="mdi-file-cloud left"></i>Создать</a>
+    <h2>Создание пользователя</h2>
+    <form>
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="mdi-action-account-circle prefix"></i>
+                        <input id="icon_prefix" type="text" class="validate" value="Empty">
+                        <label for="icon_prefix">Фамилия Имя</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input id="icon_telephone" type="tel" class="validate" value="Empty">
+                        <label for="icon_telephone">Телефон</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row type-field">
+            <div class="input-field col s12">
+                <select>
+                    <option value="Admin" selected>Администратор</option>
+                    <option value="Support">Помощник</option>
+                    <option value="Student">Студент</option>
+                </select>
+                <label>Роль</label>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

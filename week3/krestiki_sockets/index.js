@@ -24,31 +24,33 @@ function sendAJAX(method, url, data, callback) {
       callback.call(null, xhr);
     }
   });
-  if (data) {
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    if (url === gameUrls.move) {
-      xhr.setRequestHeader('Game-ID', state.gameId);
-      xhr.setRequestHeader('Player-ID', state.playerId);
-    }
-    xhr.send(data);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  if (url === gameUrls.move) {
+    xhr.setRequestHeader('Game-ID', state.gameId);
+    xhr.setRequestHeader('Player-ID', state.playerId);
   }
-  else xhr.send();
+  if (data) {
+    xhr.send(data);
+  } else {
+    xhr.send();
+  }
 }
 function getXHRData(xhr) {
   'use strict';
   var type;
   var content;
   type = xhr.getResponseHeader('Content-Type');
-  console.log('xhr type = ' + type);
+
   if (xhr.responseText ) {
     if ( type && type.match(/application\/json/) ) {
       content = JSON.parse(xhr.responseText);
-    } else if (xhr.responseText.match(/side/)) {
+    } else if (xhr.responseText.match(/side/) || xhr.responseText.match(/move/)) {
       content = JSON.parse(xhr.responseText);
     } else {
       content = xhr.responseText;
     }
   }
+  console.log('xhr type = ' + type + ' content ' + content);
   return content;
 }
 function sendWebsocketData(data) {
@@ -98,27 +100,31 @@ function responseForMove(xhr) {
   if (xhr.status === 200) {
     cellsContainer.removeEventListener('click', makeChoice);
     content = getXHRData(xhr);
-    fillMove(state.last);
+    fillMove(state.last, state.myClass);
     if (content.win) {
       makeWinner(content.win);
+    } else {
+      notMyMoveLogic();
     }
   } else {
-    errorMove(content.message);
+    errorMove(content);
   }
 }
-//
+
 function makeWinner(winner) {
   mainGameStatusMsg.textContent = winner;
 }
-function errorMove(errorMsg) {
+function errorMove(content) {
   'use strict';
-  mainGameStatusMsg.textContent = errorMsg || 'Неизвестная ошибка';
+  var errMsg;
+  errMsg = ( content === undefined ) ? 'РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°' : content.responseText;
+  mainGameStatusMsg.textContent = errMsg;
   cancelCreateGame();
 }
 // fill with x or o if success after click
-function fillMove(index) {
+function fillMove(index, className) {
   'use strict';
-  cells[index].classList.add(state.myClass);
+  cells[index].classList.add(className);
 }
 function makeChoice(e) {
   'use strict';
@@ -171,9 +177,19 @@ function myMoveLogic() {
 // TODO H1 + H2
 function getLongPoll(xhr) {
   'use strict';
-  var content = getXHRData(xhr);
-  if (200 === xhr.status) {
-
+  var content;
+  content = getXHRData(xhr);
+  if (xhr.status === 200) {
+    if (content.move) {
+      fillMove(--content.move, state.partnerClass);
+      cellsContainer.addEventListener('click', makeChoice);
+    }
+    if (content.win) {
+      makeWinner(content.win);
+    }
+    return;
+  } else {
+    makeLongPoll();
   }
 }
 function makeLongPoll() {
@@ -204,14 +220,15 @@ function startGameClientSide(xhr) {
     startGameContainer.style.display = 'none';
     mainGameContainer.style.display = 'block';
     state.myClass = content.side;
+    state.partnerClass = ( state.myClass === 'x' ) ? 'o' : 'x';
     renderField(10);
     return;
   }
   if (xhr.status === 410) {
-    showMessage(createGameStatusMsg, 'Ошибка старта игры: другой игрок не ответил');
+    showMessage(createGameStatusMsg, 'РћС€РёР±РєР° СЃС‚Р°СЂС‚Р° РёРіСЂС‹: РґСЂСѓРіРѕР№ РёРіСЂРѕРє РЅРµ РѕС‚РІРµС‚РёР»');
     return;
   }
-  showMessage(createGameStatusMsg, 'Неизвестная ошибка старта игры');
+  showMessage(createGameStatusMsg, 'РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР° СЃС‚Р°СЂС‚Р° РёРіСЂС‹');
 }
 function startGameServerPart(playerId) {
   'use strict';
@@ -220,7 +237,7 @@ function startGameServerPart(playerId) {
   startGameObj = {};
   state.playerId = playerId;
   startGameBtn.disabled = true;
-  showMessage(createGameStatusMsg, 'Ожидаем начала игры');
+  showMessage(createGameStatusMsg, 'РћР¶РёРґР°РµРј РЅР°С‡Р°Р»Р° РёРіСЂС‹');
   gameReadyUrl = gameUrls.gameReady;
   startGameObj.player = playerId;
   startGameObj.game = state.gameId;
@@ -275,7 +292,7 @@ function webSocketControl(url) {
 }
 function cancelCreateGame() {
   'use strict';
-  showMessage(createGameStatusMsg, 'Ошибка создания игры');
+  showMessage(createGameStatusMsg, 'РћС€РёР±РєР° СЃРѕР·РґР°РЅРёСЏ РёРіСЂС‹');
   startGameBtn.disabled = false;
 }
 function registerGameOnServer(xhr) {
