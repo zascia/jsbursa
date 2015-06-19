@@ -24,7 +24,7 @@
 
   }
   Student.prototype = Object.create(User.prototype);
-  
+
   User.load = function(cb) {
     var listObj;
     var listUser;
