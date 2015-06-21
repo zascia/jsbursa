@@ -15,7 +15,7 @@
     xhr.send(data);
     xhr.addEventListener('readystatechange', function readyList() {
       if (xhr.readyState === xhr.DONE) {
-        callback(xhr);
+        if (callback) callback(xhr);
       }
     });
   }
@@ -37,7 +37,7 @@
       if (xhr.status === 200) {
         listObj = JSON.parse(xhr.responseText);
         listUser = listObj.map(function(item) {
-          if (item.role === 'Administrator') {
+          if (item.role === 'Administrator' || item.role === 'Admin') {
             return new Administrator(item);
           } else if (item.role === 'Support') {
             return new Support(item);
@@ -54,11 +54,19 @@
     headers = [{'name': 'Content-Type', 'value': 'application/json'}];
     doRequest('GET', window.crudURL, null, headers, getUsersList);
   }
+  User.prototype.create = function(cb) {
+    var headers;
+    headers = [{'name': 'Content-Type', 'value': 'application/json'}];
+    doRequest('POST', window.crudURL, null, headers, cb);
+  }
   User.prototype.save = function(cb) {
     var headers;
     var err;
+    var self;
     err = '';
-    function saveUser(xhr) {
+    self = this;
+
+    function responseSaveUser(xhr) {
       if (xhr.status >= 200 && xhr.status <= 204) {
         cb(err);
       } else {
@@ -66,18 +74,28 @@
         cb(err);
       }
     }
-    function createUser(xhr) {
+    function saveUser(xhr) {
       var content;
+      content = JSON.stringify(self);
+      if (!xhr) {
+        doRequest('PUT', window.crudURL + '/' + self.id, content, headers, responseSaveUser);
+        return;
+      }
       if (xhr.status >= 200 && xhr.status <= 204) {
-        this.id = JSON.parse(xhr.responseText);
-        doRequest('PUT', window.crudURL, xhr.responseText, headers, saveUser);
+        self.id = JSON.parse(xhr.responseText).id;
+        doRequest('PUT', window.crudURL + '/' + self.id, content, headers, responseSaveUser);
       } else {
         err = xhr;
         cb(err);
       }
     }
     headers = [{'name': 'Content-Type', 'value': 'application/json'}];
-    doRequest('POST', window.crudURL, null, headers, createUser);
+    // check if it is create new user or update existing
+    if (!self.id) {
+      User.prototype.create.apply(self, [saveUser]);
+    } else {
+      saveUser();
+    }
   }
   User.prototype.remove = function(cb) {
     var headers;
@@ -108,7 +126,7 @@
   }
   function Student(data) {
     User.apply(this, arguments);
-    this.strikes = data.strikes;
+    this.strikes = data.strikes || 0;
   }
 
   Administrator.prototype = Object.create(User.prototype);
@@ -118,8 +136,21 @@
   Student.prototype = Object.create(User.prototype);
   Student.prototype.constructor = Student;
 
+  Administrator.prototype.save = function(cb) {
+    function refreshAdmins() {
+      var parser = document.createElement('a');
+      parser.href = window.crudURL;
+      doRequest('GET', parser.protocol + '//' + parser.host + '/refreshAdmins');
+    }
+    User.prototype.save.apply(this, [cb]);
+    refreshAdmins();
+  }
+  Student.prototype.getStrikesCount = function() {
+    return this.strikes;
+  }
+
   window.User = User;
-  window.Administrator = Administrator;
+  window.Admin = Administrator;
   window.Support = Support;
   window.Student = Student;
 })();

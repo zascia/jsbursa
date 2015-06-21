@@ -52,7 +52,7 @@
         cb(new Error());
       }
       if (!user.id) {
-        alert('После сохранения не появился id! это ошибка!')
+        alert('После сохранения не появился id! это ошибка!');
         cb(new Error());
       }
       me.items.push(user);
