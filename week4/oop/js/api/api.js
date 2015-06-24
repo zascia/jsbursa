@@ -2,7 +2,7 @@
  * Created by zascia on 17.06.2015.
  */
 (function() {
-  var dispatcher = new Dispatcher();
+  'use strict';
 
   function doRequest(method, url, data, headers, callback) {
     var xhr = new XMLHttpRequest();
@@ -27,7 +27,7 @@
     this.role = data.role;
   }
 
-  User.load = function(cb) {
+  User.load = function loadUser(cb) {
     var headers;
     function getUsersList(xhr) {
       var err;
@@ -36,7 +36,7 @@
       err = listUser = '';
       if (xhr.status === 200) {
         listObj = JSON.parse(xhr.responseText);
-        listUser = listObj.map(function(item) {
+        listUser = listObj.map(function listUserItem(item) {
           if (item.role === 'Administrator' || item.role === 'Admin') {
             return new Administrator(item);
           } else if (item.role === 'Support') {
@@ -54,12 +54,12 @@
     headers = [{'name': 'Content-Type', 'value': 'application/json'}];
     doRequest('GET', window.crudURL, null, headers, getUsersList);
   }
-  User.prototype.create = function(cb) {
+  User.prototype.create = function createUserInn(cb) {
     var headers;
     headers = [{'name': 'Content-Type', 'value': 'application/json'}];
     doRequest('POST', window.crudURL, null, headers, cb);
   }
-  User.prototype.save = function(cb) {
+  User.prototype.save = function saveUserInn(cb) {
     var headers;
     var err;
     var self;
@@ -97,7 +97,7 @@
       saveUser();
     }
   }
-  User.prototype.remove = function(cb) {
+  User.prototype.remove = function removeUserInn(cb) {
     var headers;
     var id;
     id = this.id;
@@ -136,7 +136,7 @@
   Student.prototype = Object.create(User.prototype);
   Student.prototype.constructor = Student;
 
-  Administrator.prototype.save = function(cb) {
+  Administrator.prototype.save = function saveUserInn(cb) {
     function refreshAdmins() {
       var parser = document.createElement('a');
       parser.href = window.crudURL;
@@ -145,7 +145,7 @@
     User.prototype.save.apply(this, [cb]);
     refreshAdmins();
   }
-  Student.prototype.getStrikesCount = function() {
+  Student.prototype.getStrikesCount = function getStrikesCountInn() {
     return this.strikes;
   }
 
