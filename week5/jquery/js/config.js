@@ -1,0 +1,1 @@
+window.url = 'http://jb5.smartjs.academy/api/users';
