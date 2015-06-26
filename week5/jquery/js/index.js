@@ -13,30 +13,46 @@ status
 /*id
 name
 phone*/
-function cancelDrag() {
-  $('ul').sortable('cancel');
-}
 function startSortable() {
   var container;
+  var newStatus;
+  var studentId;
+  var dataToSend;
   container = $('ul');
   container.sortable( {
     connectWith: 'ul',
-    activate: function(event, ui) {
-      if ( ui.sender.parent().attr('class').contains('removed') ) {
-        // container.sortable.call(this, event, 'cancel');
+    receive: function(event, ui) {
+      if ( $(ui.item).data('status') === 'removed' ) {
+        console.log('contains remove', $(ui.item).data('status'));
+        $(ui.sender).sortable('cancel');
+        return;
       }
-      // POST запрос на урл window.url + '/' + id (где id - id текущего студента) с содержимым {status: newStatus} - где newStatus
-      // если POST-запрос провалился - перетаскивание необходимо отменить
+      newStatus = $(event.target).parent().hasClass('active') ? 'active' : $(event.target).parent().hasClass('redcard') ? 'redcard' : 'removed';
+      studentId = $(ui.item).data('id');
+      dataToSend = {
+        status: newStatus
+      }
+      $.ajax({
+        type: 'POST',
+        url: window.url + '/' + studentId,
+        data: dataToSend,
+        success: function success(data) {
+          $(ui.item).data('status', newStatus);
+        },
+        error: function error(XMLHttpRequest, textStatus, errorThrown) {
+          $(ui.sender).sortable('cancel');
+        }
+      });
     }
   });
-
 }
 
 function renderStudents(list, status) {
   var container;
   var userList;
   container = $('.'+ status).find('ul');
-  var compiled = _.template('<% _.forEach(students, function(student) { %> <li data-id=<%- student.id %>><h3><%- student.name %></h3><h4><%- student.phone %></h4></li><% }); %>');
+  $(container).html('');
+  var compiled = _.template('<% _.forEach(students, function(student) { %> <li data-id=<%- student.id %> data-status=<%- student.status %>><h3><%- student.name %></h3><h4><%- student.phone %></h4></li><% }); %>');
   userList = compiled({'students' : list});
   container.append(userList);
   startSortable();
@@ -65,8 +81,10 @@ function getStudents() {
     filterStudents(data)
   });
 }
-
-$(document).ready(function(){
+function switchStudentsPolling() {
   getStudents();
+}
+$(document).ready(function(){
+  switchStudentsPolling();
 });
 
