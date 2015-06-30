@@ -1,0 +1,27 @@
+ul {
+    list-style: none;
+    min-height: 200px;
+}
+
+ul li {
+    display: block;
+    background-color: white;
+    border: solid black 1px;
+    border-radius: 5px;
+    padding: 5px;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.redcard ul li {
+    background-color: lightpink;
+}
+
+.removed ul li {
+    background-color: gray;
+}
+
+.placeholder {
+    height: 50px;
+    background-color: lightyellow;
+}
