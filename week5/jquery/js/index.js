@@ -8,6 +8,15 @@ status
   active
   redcard
   removed
+
+ 1. storage - гет - получаем те что вообще нужно  выкинуть, они поменяли статус
+ var dropActive = _.difference(activeStorage, activeGet); вот это нужно выкинуть
+ 2. гет - сторэдж - получаем те новые в конец списка состояния
+ var newActive = _.difference(activeGet, activeStorage); это добавить
+ теперь старые убираем var oldOut = _.difference(activeStorage, dropActive);
+ 3. те что есть и в сторедже и в гете нужно оставить по порядку как в сторедже
+ и новые с гета добавляем var resultActive = _.union(oldOut, newActive);
+
 */
 
 /*id
