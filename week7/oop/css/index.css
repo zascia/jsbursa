@@ -1,0 +1,59 @@
+.row {
+    margin-bottom: 0;
+}
+
+
+.list-container {
+    position: relative;
+    padding: 0 !important;
+    height: 100vh;
+}
+
+div.list {
+    height: 100%;
+    padding: 0 !important;
+    position: relative;
+    overflow: auto;
+}
+
+.list ul li {
+    padding: 0.75rem;
+    width: 100%;
+    cursor: pointer;
+    height: 5rem;
+
+}
+
+
+.list ul li.active {
+    background-color: orange !important;
+    font-weight: bold;
+}
+
+.list .secondary-content {
+    float: left;
+    margin-right: 5px;
+    line-height: 3.5rem;
+    font-size: 2rem;
+}
+
+.list h4 {
+    margin: 0;
+}
+
+.list p {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.list-container .add-user {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+}
+
+.save-btn {
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+}
