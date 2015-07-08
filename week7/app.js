@@ -3,6 +3,7 @@ var users = [
   { id: '2', name: 'Ivanov Ivan', phone: '+380670000002', role: 'Student', strikes: 1 },
   { id: '3', name: 'Petrov Petr', phone: '+380670000001', role: 'Support', location: 'Kiev' }
 ];
+var userCurrentNum = users.length;
 
 var http = require('http');
 var url = require('url');
@@ -21,9 +22,26 @@ http.createServer(function(req, res){
       "Control-Allow-Origin": "*",
       "Control-Allow-Methods": "GET, POST, PUT",
       "Control-Allow-Headers": "Content-Type",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
     });
     res.write(JSON.stringify(users));
     res.end();
   }
+
+  if (req.method === 'POST') {
+    var userId = ++userCurrentNum;
+    var role = 'student';
+    var dataToSend = {role: role, id: userId};
+    res.writeHead(200, {
+      "Control-Allow-Origin": "*",
+      "Control-Allow-Methods": "GET, POST, PUT",
+      "Control-Allow-Headers": "Content-Type",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+    res.write(JSON.stringify(dataToSend));
+    res.end();
+  }
+
 }).listen(20007);
