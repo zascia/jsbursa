@@ -10,11 +10,24 @@ var url = require('url');
 
 var server = http.createServer(function(req, res){
   // console.log(req);
+  var data = '';
+  var parseUrl = url.parse(req.url);
 
+  var path = req.method + ' ' + req.url;
+
+  var headers = {
+    'Content-type' : 'application/json'
+  };
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {'Access-Control-Allow-Headers': 'content-type', 'Access-Control-Allow-Methods': 'GET,HEAD,PUT,POST,DELETE', 'Access-Control-Allow-Origin': req.headers.origin});
     res.end();
+  }
+
+  if(!req.headers['content-type'] || req.headers['content-type'].indexOf('application/json') === -1){
+    res.writeHead(401);
+    res.end();
+    return;
   }
 
   if (req.method === 'GET' && parseUrl.pathname === '/refreshAdmins') {
@@ -38,6 +51,8 @@ var server = http.createServer(function(req, res){
     var userId = ++userCurrentNum;
     var role = 'student';
     var dataToSend = {role: role, id: userId};
+    var dataToCreate = {role: role, id: userId, name: '', phone: ''};
+    users.push(dataToCreate);
     res.writeHead(200, {
       "Control-Allow-Origin": "*",
       "Control-Allow-Methods": "GET, POST, PUT",
@@ -46,6 +61,32 @@ var server = http.createServer(function(req, res){
       "Access-Control-Allow-Origin": "*"
     });
     res.write(JSON.stringify(dataToSend));
+    res.end();
+  }
+
+  if (req.method === 'PUT') {
+    req.on('data',  function(chunk){
+      data += chunk.toString('UTF-8');
+    });
+
+    req.on('end', function() {
+      // empty 200 OK response for now
+      console.log('data', data);
+      res.writeHead(200, "OK", {'Content-Type': 'application/json'});
+      res.end();
+    });
+
+    /*var userId = ++userCurrentNum;
+    var role = 'student';
+    var dataToSend = {role: role, id: userId};
+    res.writeHead(200, {
+      "Control-Allow-Origin": "*",
+      "Control-Allow-Methods": "GET, POST, PUT",
+      "Control-Allow-Headers": "Content-Type",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    });
+    res.write(JSON.stringify(dataToSend));*/
     res.end();
   }
 
