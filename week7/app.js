@@ -8,7 +8,8 @@ var userCurrentNum = users.length;
 var http = require('http');
 var url = require('url');
 
-var server = http.createServer(function(req, res){
+var server = http.createServer();
+server.on('request', function(req, res){
   // console.log(req);
   var data = '';
   var parseUrl = url.parse(req.url);
@@ -16,7 +17,7 @@ var server = http.createServer(function(req, res){
   var path = req.method + ' ' + req.url;
 
   var headers = {
-    'Content-type' : 'application/json'
+    'Content-Type' : 'application/json'
   };
 
   if (req.method === 'OPTIONS') {
@@ -30,7 +31,7 @@ var server = http.createServer(function(req, res){
     return;
   }
 
-  if (req.method === 'GET' && parseUrl.pathname === '/refreshAdmins') {
+  if (path === 'GET /refreshAdmins') {
     res.end();
     return;
   }
@@ -45,6 +46,7 @@ var server = http.createServer(function(req, res){
     });
     res.write(JSON.stringify(users));
     res.end();
+    return;
   }
 
   if (req.method === 'POST') {
@@ -62,6 +64,7 @@ var server = http.createServer(function(req, res){
     });
     res.write(JSON.stringify(dataToSend));
     res.end();
+    return;
   }
 
   if (req.method === 'PUT') {
@@ -72,8 +75,15 @@ var server = http.createServer(function(req, res){
     req.on('end', function() {
       // empty 200 OK response for now
       console.log('data', data);
-      res.writeHead(200, "OK", {'Content-Type': 'application/json'});
+      res.writeHead(204, {
+        "Control-Allow-Origin": "*",
+        "Control-Allow-Methods": "GET, POST, PUT",
+        "Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      });
       res.end();
+      return;
     });
 
     /*var userId = ++userCurrentNum;
@@ -89,10 +99,9 @@ var server = http.createServer(function(req, res){
     res.write(JSON.stringify(dataToSend));*/
     res.end();
   }
-
 });
 if (module.parent) {
-  module.exports = server
+  module.exports = server;
 } else {
   server.listen(20007);
 }
