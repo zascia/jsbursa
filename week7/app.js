@@ -32,6 +32,7 @@ server.on('request', function(req, res){
   }
 
   if (path === 'GET /refreshAdmins') {
+    res.writeHead(200);
     res.end();
     return;
   }
