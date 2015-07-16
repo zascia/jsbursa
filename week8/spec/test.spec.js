@@ -46,6 +46,10 @@ describe('GET USERS', function() {
 
 /*
 
+   как проверить реакцию на запрос без Content-Type?
+   кидайте запрос без него и смотрите чтобы отдал 401
+ 
+
  it('Check body users', function (done) {
  request(app)
  .get('/api/users')
