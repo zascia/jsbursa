@@ -2,10 +2,25 @@
  * Created by ashu on 15-Jul-15.
  */
 var app = require('../index');
+var request = require ('supertest');
 /*;
 var port = 20007;
 var base_url = 'http://localhost' + ':' + port + '/' + 'api/users';
 app.listen(port);*/
+
+describe('GET /api/users', function() {
+  it('Server repsonse has header content-type with application/json',
+    function(done){
+      request(app)
+        .get('/api/users')
+        .set('Content-Type', 'application/json')
+        .end(function(err, res){
+          expect(res.headers['content-type']).toBe('application/json');
+          done();
+        });
+    });
+  )};
+
 
 describe("Node server simple test", function(){
   it("The simplest test works", function(){
