@@ -2,27 +2,80 @@
  * Created by ashu on 15-Jul-15.
  */
 var app = require('../index');
-var request = require ('supertest');
-/*;
-var port = 20007;
-var base_url = 'http://localhost' + ':' + port + '/' + 'api/users';
-app.listen(port);*/
+var request = require('supertest');
+var http = require('http');
+var users = [
+  { id: '1', name: 'Illya Klymov', phone: '+380504020799', role: 'Administrator' },
+  { id: '2', name: 'Ivanov Ivan', phone: '+380670000002', role: 'Student', strikes: 1 },
+  { id: '3', name: 'Petrov Petr', phone: '+380670000001', role: 'Support', location: 'Kiev' }
+];
 
-describe('GET /api/users', function() {
-  it('Server repsonse has header content-type with application/json',
-    function(done){
-      request(app)
-        .get('/api/users')
-        .set('Content-Type', 'application/json')
-        .end(function(err, res){
-          expect(res.headers['content-type']).toBe('application/json');
-          done();
-        });
-    });
-  )};
+describe('Wrong response code GET ?? /refreshAdmins', function() {
+  it('Should response with 200 for refresh admins', function(done) {
+    request(app)
+      .get('/refreshAdmins')
+      .set('Content-Type', 'application/json')
+      .end(function(err, res) {
+        expect(res.statusCode).toBe(200);
+        done();
+      });
+  });
+});
 
+describe('GET USERS', function() {
+  it('Check starting server state', function (done) {
+    request(app)
+      .get('/api/users')
+      .set('Content-Type', 'application/json')
+      .end(function (err, res) {
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toEqual(users);
+        done();
+      });
+  });
+  it('Check existing user returns 404', function(done) {
+    request(app)
+      .get('/api/users/100')
+      .set('Content-Type', 'application/json')
+      .end(function(err, res) {
+        expect(res.statusCode).toBe(404);
+        done();
+      });
+  });
+});
 
-describe("Node server simple test", function(){
+/*
+
+ it('Check body users', function (done) {
+ request(app)
+ .get('/api/users')
+ .set('Content-Type', 'application/json')
+ .end(function (err, res) {
+ var resBody = res.body;
+ resBody.forEach(function(item, i, resBody) {
+ existIdArr.push(item.id);
+ });
+ maxId = parseInt(_.last(existIdArr)) + 1;
+ console.log(existIdArr);
+ console.log(maxId);
+ done();
+ });
+ });
+
+ it('check not existing id response', function(done) {
+ request(app)
+ .get('/api/users/' + maxId)
+ .set('Content-Type', 'application/json')
+ .end(function (err, res) {
+ console.log('Unexisting Id PUT request: ', res.statusCode);
+ expect(res.statusCode).toEqual(404);
+ done();
+ });
+ });
+
+ */
+
+/*describe("Node server simple test", function(){
   it("The simplest test works", function(){
     var t = app.getName('Mike');
     expect(t).toEqual('Hello Mike');
@@ -36,24 +89,4 @@ describe("Node server async test", function(){
     });
   });
 });
-
-/*var app = require('../index.js');
-var request = require('supertest');
-
-var users = [{id: '1', name: 'Illya Klymov', phone: '+380504020799', role: 'Administrator'},
-  {id: '2', name: 'Ivanov Ivan', phone: '+380670000002', role: 'Student', strikes: 1},
-  {id: '3', name: 'Petrov Petr', phone: '+380670000001', role: 'Support', location: 'Kiev'}];
-
-
-describe('GET USERS', function() {
-  it('initial state', function(done) {
-    request(app)
-      .get('/api/users')
-      .set('Content-Type', 'application/json')
-      .expect(200)
-      .end(function(err, res) {
-        expect(res.body).toEqual(users);
-        done(err);
-      });
-  });
-});*/
+*/
