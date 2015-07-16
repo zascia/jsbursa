@@ -77,6 +77,19 @@ describe('GET USERS', function() {
  });
  });
 
+ describe('C', function() {
+ it('no Content-Type', function(done) {
+ request(app)
+ .get('/api/users')
+ .set('Content-Type', '/')
+ .end(function(err, res){
+ console.log(res.status);
+ expect(res.status).toBe(401);
+ done();
+ });
+ });
+ });
+
  */
 
 /*describe("Node server simple test", function(){
