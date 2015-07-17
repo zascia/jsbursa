@@ -48,7 +48,27 @@ describe('GET USERS', function() {
 
    как проверить реакцию на запрос без Content-Type?
    кидайте запрос без него и смотрите чтобы отдал 401
- 
+
+in each describe:
+ beforeEach(function() {
+ users = [{id: '1', name: 'Illya Klymov', phone: '+380504020799', role: 'Administrator'},
+ {id: '2', name: 'Ivanov Ivan', phone: '+380670000002', role: 'Student', strikes: 1},
+ {id: '3', name: 'Petrov Petr', phone: '+380670000001', role: 'Support', location: 'Kiev'}];
+ });
+
+ it('update', function (done) {
+ var id = '3';
+ var updatedUser = {id: '3', name: 'Petrov Petr Updated', phone: '+380670000001', role: 'Support', location: 'Kiev'};
+ request(app)
+ .put('/api/users/' + id, JSON.stringify(updatedUser))
+ .set('Content-Type', 'application/json')
+ .expect(204)
+ .end(function (err, res) {
+ done(err);
+ });
+ });
+ });
+
 
  it('Check body users', function (done) {
  request(app)
