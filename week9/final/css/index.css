@@ -1,0 +1,26 @@
+section {
+    font-size: 2em;
+
+}
+.light {
+    border-radius: 30px;
+    width: 60px;
+    height: 60px;
+    border: solid black 3px;
+    display: inline-block;
+    line-height: 60px;
+    text-align: center;
+    margin: 2px;
+}
+
+.pending {
+    background-color: yellow;
+}
+
+.done {
+    background-color: green;
+}
+
+.bad {
+    background-color: red;
+}

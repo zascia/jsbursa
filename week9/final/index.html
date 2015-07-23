@@ -1,0 +1,31 @@
+<html>
+<head>
+    <link rel="stylesheet" href="css/index.css">
+    <meta charset="utf-8">
+    <script src="js/service.js"></script>
+    <script src="js/magic.js"></script>
+</head>
+<body>
+<h1>Последовательно</h1>
+<section class="sequence">
+    <div class="light final">
+        +
+    </div>
+    <=
+</section>
+<hr/>
+<h1>Параллельно</h1>
+<section class="parallel">
+    <div class="light final">
+        +
+    </div>
+    <=
+</section>
+<script>
+    window.addEventListener('load', function () {
+        sequence(window.sequenceFns, window.checkSequence);
+        parallel(window.parallelFns, window.checkParallel);
+    });
+</script>
+</body>
+</html>
