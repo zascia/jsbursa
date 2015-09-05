@@ -1,9 +1,10 @@
-/**
+ /**
  * Created by ashu on 04-Sep-15.
  */
 
 var SmavaTestManager = (function ($){
     var TestManager;
+     var TheTestManager;
     // debugger;
     (function ($) {
         var instance;
@@ -14,10 +15,8 @@ var SmavaTestManager = (function ($){
             }
 
             instance = new TheTestManager(cfg);
-
-            return {
-                init : instance.init
-            };
+            //console.dir(instance);
+            return instance;
         }
     }(jQuery));
 
@@ -29,27 +28,25 @@ var SmavaTestManager = (function ($){
             return new TheTestManager();
         }
 
-        this.init(cfg);
+        //this.init(cfg);
 
     };
 
 
     function managerPrototype() {
+
         this.name = 'TestManager';
+        this.init = function() {
+            return this.name;
+        }
 
-
-    };
-
-    managerPrototype.prototype.init = function(cfg) {
-        console.log(this);
-        return name;
     }
 
 
-    TheTestManager.prototype = Object.create(managerPrototype.prototype);
-    TheTestManager.prototype.constructor = TheTestManager;
+    TheTestManager.prototype = new managerPrototype();
 
     return TestManager;
+     //return TheTestManager;
 
 }(jQuery));
 
