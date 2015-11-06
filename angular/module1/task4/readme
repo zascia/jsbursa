@@ -1,0 +1,35 @@
+Занятие #4
+Приветствую!
+Чтение про директивы для самых маленьких (да здравствует Хабрахабр):
+
+    http://habrahabr.ru/post/179755/
+    http://habrahabr.ru/post/180365/
+    http://habrahabr.ru/post/200620/
+
+Итак, домашнее задание.
+
+Задание №1. Простое :)
+
+Реализуйте директиву smart-button. Директива вызывается так
+
+<smart-button loading="true" text="Save"></smart-button>
+В результате работы директива рендерится обычная кнопка button, но если loading true - то через 100 миллисекунд у текста должна появится крутящая иконка. Если loading - false - никакой иконки нет
+
+Задание №2.
+
+Реализуйте директиву make-transparent, которая делает smart-button полупрозрачным если у нас появляется крутящаяся иконка.
+
+<smart-button make-transparent loading="true" text="Save"></smart-button>
+
+Решение двух заданий сразу присылайте на почту illya@smartjs.academy с темой AngularJS#4.
+Если есть вопросы - с удовольствием отвечу на них в Слаке!
+
+
+
+angular.module('moduleName', [])
+    .directive('directiveName', function () {
+        /*Метод-фабрика для директивы*/
+    })
+    .directive('anotherDirectiveName', function () {
+        /*Метод-фабрика для директивы*/
+    });

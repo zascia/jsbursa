@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all" />
+    <script type="text/javascript" src="js/lib/angular.js"></script>
+    <script src="js/app/components.js"></script>
+    <script src="js/app/app.js"></script>
+</head>
+<body>
+<section>
+    <h2>Just to try section for user {{userName}}</h2>
+    <label>User name:</label>
+    <input type="text" ng-model="userName" placeholder="type your name">
+</section>
+<section ng-controller="TodoListController as todoList">
+    <span>{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
+    [ <a href="#" ng-click="todoList.archive()">archive</a> ]
+    <ul>
+        <li ng-repeat="todo in todoList.todos">
+            <input type="checkbox" ng-model="todo.done">
+            <span class="done-{{todo.done}}">{{todo.text}}</span>
+        </li>
+    </ul>
+    <form ng-submit="todoList.addTodo()">
+        <input type="text" ng-model="todoList.todoText" size="30" placeholder="add new todo">
+        <input type="submit" value="add">
+    </form>
+</section>
+
+</body>
+</html>
