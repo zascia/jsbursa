@@ -5,28 +5,19 @@
     <title></title>
     <link rel="stylesheet" type="text/css" href="css/main.css" media="all" />
     <script type="text/javascript" src="js/lib/angular.js"></script>
-    <script src="js/app/components.js"></script>
     <script src="js/app/app.js"></script>
 </head>
 <body>
-<section>
-    <h2>Just to try section for user {{userName}}</h2>
-    <label>User name:</label>
-    <input type="text" ng-model="userName" placeholder="type your name">
-</section>
-<section ng-controller="TodoListController as todoList">
-    <span>{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
-    [ <a href="#" ng-click="todoList.archive()">archive</a> ]
-    <ul>
-        <li ng-repeat="todo in todoList.todos">
-            <input type="checkbox" ng-model="todo.done">
-            <span class="done-{{todo.done}}">{{todo.text}}</span>
-        </li>
-    </ul>
-    <form ng-submit="todoList.addTodo()">
-        <input type="text" ng-model="todoList.todoText" size="30" placeholder="add new todo">
-        <input type="submit" value="add">
-    </form>
+
+<section ng-controller="MainController">
+    <h2>Attention! Now you'll see the default smart button</h2>
+    <smart-button></smart-button>
+    <h2>Now button with text</h2>
+    <smart-button text="Save"></smart-button>
+    <h2>Now button with loading text</h2>
+    <smart-button loading="true" text="Save"></smart-button>
+    <h2>Now transparent button after loading text</h2>
+    <smart-button make-transparent loading="true" text="Save"></smart-button>
 </section>
 
 </body>
