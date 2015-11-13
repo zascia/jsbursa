@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var welcome = require('./welcome');
-welcome('home');
+let welcome = require('./welcome');
+welcome('home23');
 
 exports.welcome = welcome;

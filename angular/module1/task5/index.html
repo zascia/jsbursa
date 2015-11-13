@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app4" ng-init="hello = 'test'">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="css/main.css" media="all" />-->
+    <script type="text/javascript" src="js/lib/angular.js"></script>
+    <script src="js/app/app.js"></script>
+</head>
+<body ng-controller="MainCtrl">
+
+<div class="container">
+    <ul>
+        <li ng-click="item.open = !item.open" ng-repeat="item in items">{{$index + 1}}. {{item.title}}
+            <ul ng-init="parentIndex = $index + 1" ng-if="item.open">
+                <li ng-repeat="chapter in item.chapters">{{parentIndex}}.{{$index + 1}} {{chapter}}</li>
+            </ul>
+        </li>
+    </ul>
+    <h2>{{hello}}</h2>
+    <a href="http://google.com" my-click="run($event)">Google</a>
+    <!--<demo param1="1" param2="hello" param3="run(VAR1)" />-->
+</div>
+
+</body>
+</html>
