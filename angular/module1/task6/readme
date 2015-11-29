@@ -1,4 +1,4 @@
-Action-on-click-outside
+1. Action-on-click-outside
 
 Реализовать директиву action-on-click-outside, которая будет обладать следующей функциональностью:
 - директива навешивается на произвольный элемент на странице. Выглядит так:
@@ -6,3 +6,6 @@ Action-on-click-outside
 (т.е. директива принмает выражение).
 - при клике за пределами указанного div'а - вызывается выражение описанное в параметре директивы (в данном случае - hideSidebar из $scope)
 + реализовать ng-animate скртыь контейнер.
+
+2. Logged-in directive (analog of ng-if user logged in)
+

@@ -2,6 +2,9 @@
 (function(){
   'use strict';
   angular.module('app4', [])
+    .run(function($rootScope) {
+      $rootScope.user = '';
+    })
     .controller('MainCtrl', function($scope) {
       $scope.hideSidebar = function(event) {
         event.preventDefault();
@@ -41,6 +44,20 @@
           });
         }
 
+      }
+    })
+    .directive('loggedInOnly', function(ngIfDirective, $rootScope) {
+      var ngIf = ngIfDirective[0];
+
+      return {
+        transclude: ngIf.transclude,
+        priority: ngIf.priority,
+        link: function(scope, element, attr) {
+          attr.ngIf = function() {
+            return $rootScope.user;
+          };
+          ngIf.link.apply(this, arguments);
+        }
       }
     });
 })();
