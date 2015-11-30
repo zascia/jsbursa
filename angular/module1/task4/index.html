@@ -9,15 +9,18 @@
 </head>
 <body>
 
+
+
 <section ng-controller="MainController">
-    <h2>Attention! Now you'll see the default smart button</h2>
-    <smart-button></smart-button>
-    <h2>Now button with text</h2>
-    <smart-button text="Save"></smart-button>
+
+    <button ng-click="loading = !loading">Show me</button>
+
     <h2>Now button with loading text</h2>
-    <smart-button loading="true" text="Save"></smart-button>
-    <h2>Now transparent button after loading text</h2>
-    <smart-button make-transparent loading="true" text="Save"></smart-button>
+    <smart-button loading="loading" text="Save"></smart-button>
+
+    <h2>Now button with loading text and transparent</h2>
+    <smart-button make-transparent loading="loading" text="Save transparent"></smart-button>
+
 </section>
 
 </body>
