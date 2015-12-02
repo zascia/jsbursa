@@ -1,0 +1,19 @@
+Практическое задание 25.11.2015.
+
+По урлу http://rating.smartjs.academy/rating получить JSON и вывести список игроков. Список должен быть упорядоченным.
+1 место. Игрок. Очки
+2 место. Игрок. Очки
+
+!!! В контроллерах нельзя использовать $http
+
+
+
+var ws = new WebSocket('ws://rating.smartjs.academy/rating');
+ws.addEventListener('message', function (e) {
+  console.log(e.data);
+});
+
+http://rating.smartjs.academy/rating?hardMode
+
+
+

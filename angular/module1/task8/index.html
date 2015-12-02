@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="css/main.css" media="all" />-->
+    <script type="text/javascript" src="js/lib/angular.js"></script>
+    <script src="js/app/app.js"></script>
+    <style>
+        ul {
+            border: 1px solid #ccc;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            font-size: 16px;
+        }
+        .container {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            height: 100vh;
+            font-size: 1.5em;
+        }
+        article {
+            width: 50%;
+            background: #817865;
+            margin-right: 5%;
+        }
+        aside {
+            width: 25%;
+            background: #66afe9;
+            margin-left: 5%;
+        }
+        .content-holder {
+            box-sizing: border-box;
+            padding: 2em;
+        }
+    </style>
+</head>
+<body ng-controller="MainCtrl">
+
+<div class="container">
+    <article class="content-holder">
+        <h1>Task for practice</h1>
+
+    </article>
+    <aside class="content-holder">
+        sidebar content
+
+    </aside>
+</div>
+
+</body>
+</html>
