@@ -60,3 +60,4 @@ Directive link: вызывает на сервисе метод addRadioToGroup 
 
 
 ПОДХОДЫ 2
+!ng-repeat track by
