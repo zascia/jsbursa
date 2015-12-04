@@ -61,3 +61,8 @@ Directive link: вызывает на сервисе метод addRadioToGroup 
 
 ПОДХОДЫ 2
 !ng-repeat track by
+Есть массив из 7 элементов. Извлекается последний элемент каждые 5 секунд (поп) и пушить его в начало с помощью
+unshift. Все сдвинулись на 1 позицию.
+Создаем 7 CSS классов элементам place1 - place7. place({{$index + 1}})
+ng-hover
+Будет изменяться CSS масштабы + transition property transform (left top) и они красиво перемещаются.
