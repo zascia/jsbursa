@@ -15,4 +15,40 @@ URL todo одного пользователя: http://jsonplaceholder.typicode.
 Вторая директива - вложена в первую. Тогда не будет проблем с передачей данных
 
 
+$q.all(...) принимает массив или словарь promise-объектов, объединяет их в один, который будет разрешен, когда разрешатся все promise, или отвергнут с ошибкой, когда хотя бы один promise будет отвергнут. При этом значения придут в success-callback либо в виде массива, либо в виде словаря в зависимости от того, как был вызван метод all.
 
+$q.all({
+    obj1: $http.get('http://api/obj1'),
+    obj2: $timeout(function(){ return {type: 'obj2'}; })
+}).then(function(values){
+    obj1 = values.obj1.data;
+    obj2 = values.obj2;
+});
+
+
+
+$q-сервис также позволяет обернуть любую асинхронную операцию в свой deferred-объект с соответствующим ему promise-объектом.
+
+var postFile = function(name, file) {
+    var deferred = $q.defer();
+
+    var form = new FormData();
+    form.append('file', file);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', apiUrl + name, true);
+    xhr.onload = function(e) {
+        if (e.target.status == 200) {
+            deferred.resolve();
+        } else {
+            deferred.reject(e.target.status);
+        }
+        if (!$rootScope.$$phase) $rootScope.$apply();
+    };
+    xhr.send(form);
+
+    return deferred.promise;
+};
+
+http://habrahabr.ru/post/221111/
+https://promisesaplus.com/

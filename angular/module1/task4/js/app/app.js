@@ -47,7 +47,7 @@ angular.module('app', [])
     return {
       require: 'smartButton',
       link: function($scope, $element, $attrs, smartButtonCtrl) {
-        smartButtonCtrl.onSpinnerChange(function(value){
+        smartButtonCtrl.onSpinnerChange(function(value) {
           if (value) {
             $element.css('opacity', '0.5');
           } else {

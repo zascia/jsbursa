@@ -16,7 +16,7 @@
             color: #fff;
             font-size: 16px;
         }
-        .container {
+        .wrapper-inner {
             display: flex;
             align-items: stretch;
             justify-content: center;
@@ -41,15 +41,7 @@
 <body ng-controller="MainCtrl">
 
 <div class="container">
-    <article class="content-holder">
-        <h1>Task for practice</h1>
-        <h2>User List</h2>
-        <user-list></user-list>
-    </article>
-    <aside class="content-holder">
-        Todos content
-        <user-todos></user-todos>
-    </aside>
+    <user-list></user-list>
 </div>
 
 </body>

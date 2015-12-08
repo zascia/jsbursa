@@ -4,34 +4,48 @@
 
   angular.module('app', [])
     .controller('MainCtrl', function($scope) {
-      // dummy data
-      $scope.users = [];
-      $scope.userTodos = [];
 
     })
     .directive('userList', function(userService) {
       return {
         restrict: 'E',
         replace: true,
+        scope: {
 
-        template: ['<ul>',
-                    '<li ng-repeat="user in users">',
-                      '<label><input type="checkbox" value="{{user.id}}" />{{user.name}}</label>',
-                    '</li>',
-                  '</ul>'].join(''),
+        },
+          template: ['<div class="wrapper-inner">',
+                      '<article class="content-holder">',
+                        '<h1>User List</h1>',
+                          '<ul>',
+                            '<li ng-repeat="user in users">',
+                              '<label><input type="checkbox" value="{{user.id}}" />{{user.name}}</label>',
+                            '</li>',
+                          '</ul>',
+                      '</article>',
+                      '<aside class="content-holder">',
+                        '<user-todos></user-todos>',
+                      '</aside>',
+                      '</div>'
+                  ].join(''),
         link: function($scope, $element, $attrs) {
           userService.getUsers().then(function(result) {
+            var me = $scope;
             $scope.users = result.data;
+            $scope.userTodos = [];
 
             $element.on('click', function(evt) {
               console.log('clicked target', evt.target);
               if ('INPUT' == evt.target.nodeName && evt.target.checked) {
                 var userId = evt.target.value;
                 userService.getTodos(userId).then(function(result) {
+                  console.log('result', result);
+                  console.log('scope', $scope);
                   $scope.userTodos.push(result.data);
                 });
               }
             });
+          }).catch(function(err) {
+            console.log('error', err);
           });
 
         }
@@ -41,7 +55,6 @@
       return {
         restrict: 'E',
         replace: true,
-       
         template: [
           '<ul>',
           '<li ng-repeat="userTodo in userTodos">',
@@ -67,7 +80,7 @@
           "url": 'http://jsonplaceholder.typicode.com/users'
         });
 
-      }
+      };
 
       this.getTodos = function(userId) {
         var urlTodo = 'http://jsonplaceholder.typicode.com/users/' + userId + '/todos';
@@ -75,7 +88,7 @@
           "method": "get",
           "url": urlTodo
         });
-      }
+      };
 
     });
 
